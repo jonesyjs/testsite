@@ -29,23 +29,29 @@ export default function SvgFromContentful({ assetId, className, preview = false 
   const fetchSvg = useCallback(async () => {
     try {
       setLoading(true);
+      setError('');
       
       if (assetId) {
         // Fetch specific asset
         const asset = await getSvgAsset(assetId, preview) as Entry<SvgAssetSkeleton>;
-        setSvgContent(asset.fields.svgCode);
+        setSvgContent(asset.fields?.svgCode || '');
       } else {
         // Fetch first available SVG asset
         const assets = await getSvgAssets(preview) as Entry<SvgAssetSkeleton>[];
         if (assets.length > 0) {
-          setSvgContent(assets[0].fields.svgCode);
+          setSvgContent(assets[0].fields?.svgCode || '');
         } else {
           setError('No SVG assets found');
         }
       }
       setLastUpdated(new Date());
     } catch (err) {
-      setError('Failed to fetch SVG: ' + (err as Error).message);
+      const errorMessage = (err as Error).message;
+      if (errorMessage.includes('Contentful client not available')) {
+        setError('Contentful configuration required');
+      } else {
+        setError('Failed to fetch SVG: ' + errorMessage);
+      }
     } finally {
       setLoading(false);
     }
@@ -71,7 +77,19 @@ export default function SvgFromContentful({ assetId, className, preview = false 
   }
 
   if (error) {
-    return <div className="text-red-500 text-sm">{error}</div>;
+    return (
+      <div className="text-red-500 text-sm p-4 bg-red-50 rounded border border-red-200">
+        {error}
+      </div>
+    );
+  }
+
+  if (!svgContent) {
+    return (
+      <div className="text-gray-500 text-sm p-4 bg-gray-50 rounded border border-gray-200">
+        No SVG content available
+      </div>
+    );
   }
 
   return (
@@ -93,15 +111,23 @@ export default function SvgFromContentful({ assetId, className, preview = false 
 export function SvgAssetsList({ preview = false }: { preview?: boolean }) {
   const [assets, setAssets] = useState<Entry<SvgAssetSkeleton>[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string>('');
   const [lastUpdated, setLastUpdated] = useState<Date>(new Date());
 
   const fetchAssets = useCallback(async () => {
     try {
+      setLoading(true);
+      setError('');
       const svgAssets = await getSvgAssets(preview) as Entry<SvgAssetSkeleton>[];
       setAssets(svgAssets);
       setLastUpdated(new Date());
     } catch (err) {
-      console.error('Failed to fetch SVG assets:', err);
+      const errorMessage = (err as Error).message;
+      if (errorMessage.includes('Contentful client not available')) {
+        setError('Contentful configuration required');
+      } else {
+        setError('Failed to fetch SVG assets: ' + errorMessage);
+      }
     } finally {
       setLoading(false);
     }
@@ -126,6 +152,14 @@ export function SvgAssetsList({ preview = false }: { preview?: boolean }) {
     return <div>Loading SVG assets...</div>;
   }
 
+  if (error) {
+    return (
+      <div className="text-red-500 text-sm p-4 bg-red-50 rounded border border-red-200">
+        {error}
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-4">
       <div className="flex justify-between items-center">
@@ -136,14 +170,20 @@ export function SvgAssetsList({ preview = false }: { preview?: boolean }) {
           </div>
         )}
       </div>
-      {assets.map((asset) => (
-        <div key={asset.sys.id} className="border p-4 rounded">
-          <h3 className="font-medium mb-2">{asset.fields.title}</h3>
-          <div className="bg-gray-50 p-2 rounded">
-            <SvgFromContentful assetId={asset.sys.id} preview={preview} />
-          </div>
+      {assets.length === 0 ? (
+        <div className="text-gray-500 text-sm p-4 bg-gray-50 rounded border border-gray-200">
+          No SVG assets found
         </div>
-      ))}
+      ) : (
+        assets.map((asset) => (
+          <div key={asset.sys.id} className="border p-4 rounded">
+            <h3 className="font-medium mb-2">{asset.fields?.title || 'Untitled'}</h3>
+            <div className="bg-gray-50 p-2 rounded">
+              <SvgFromContentful assetId={asset.sys.id} preview={preview} />
+            </div>
+          </div>
+        ))
+      )}
     </div>
   );
 } 
