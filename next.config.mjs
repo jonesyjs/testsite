@@ -26,6 +26,14 @@ const nextConfig = {
       },
     ];
   },
+  
+  // ⚠️ GITHUB PAGES STATIC EXPORT CONFIG (BREAKS LIVE PREVIEW)
+  // Uncomment below for GitHub Pages deployment (NOT RECOMMENDED for this app)
+  // output: 'export',
+  // trailingSlash: true,
+  // images: {
+  //   unoptimized: true
+  // }
 };
 
 export default nextConfig;
