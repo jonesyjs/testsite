@@ -19,42 +19,53 @@ export const Post = ({ post }) => {
   const livePost = useContentfulLiveUpdates(post);
   const inspectorProps = useContentfulInspectorMode({ entryId: post.id });
 
-  console.log('PostComponent', livePost)
-
   const postDate = dayjs(post.date).format(" dddd D MMMM, YYYY");
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-between p-24 bg-white">
-      <section className="w-full">
-        <div className="container space-y-12 px-4 md:px-6">
-          <div className="space-y-4">
-            <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl"
-              {...inspectorProps({ fieldId: 'title' })} >
-              {livePost.title}
-            </h1>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-white">
+      <article className="max-w-4xl mx-auto px-6 py-16 lg:px-8">
+        
+        {/* Header Section */}
+        <header className="mb-12 space-y-8">
+          
+          {/* Title */}
+          <h1 className="text-5xl lg:text-6xl font-bold text-gray-900 leading-tight tracking-tight"
+            {...inspectorProps({ fieldId: 'title' })} >
+            {livePost.title}
+          </h1>
 
+          {/* Summary */}
+          <div className="border-l-4 border-blue-500 pl-6 py-2">
+            <p className="text-xl lg:text-2xl text-gray-700 leading-relaxed font-light"
+              {...inspectorProps({ fieldId: 'summary' })} >
+              {livePost.summary}
+            </p>
+          </div>
+
+          {/* Author Section */}
+          <div className="flex items-center space-x-4 pt-6 border-t border-gray-200">
             <PostAuthor
               author={livePost.author}
               date={postDate}
               inspectorProps={inspectorProps} />
-
-          <div className="mb-8 md:mb-16 sm:mx-0">
-
           </div>
 
-            <div className="flex justify-between flex-col md:flex-row">
-              <p className="max-w-[900px] text-zinc-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-zinc-400"
-                {...inspectorProps({ fieldId: 'summary' })} >
-                {livePost.summary}
-              </p>
-            </div>
-          </div>
-          <div className="mb-5 truncate"
+        </header>
+
+        {/* Content Section */}
+        <section className="prose prose-lg max-w-none">
+          
+          {/* Excerpt */}
+          <div className="bg-gray-50 rounded-lg p-8 border-l-4 border-gray-300"
                {...inspectorProps({ fieldId: 'excerpt' })} >
-               {livePost.excerpt}
+            <p className="text-lg text-gray-800 leading-relaxed italic">
+              {livePost.excerpt}
+            </p>
           </div>
-        </div>
-      </section>
+
+        </section>
+
+      </article>
     </div>
   );
 };
