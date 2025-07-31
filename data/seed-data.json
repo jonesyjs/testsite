@@ -1,0 +1,54 @@
+{
+  "blogPosts": [
+    {
+      "title": "Getting Started with Contentful",
+      "slug": "getting-started-contentful",
+      "body": {
+        "nodeType": "document",
+        "data": {},
+        "content": [
+          {
+            "nodeType": "paragraph",
+            "content": [
+              {
+                "nodeType": "text",
+                "value": "Welcome to Contentful! This is your first blog post created through seeding.",
+                "marks": [],
+                "data": {}
+              }
+            ],
+            "data": {}
+          }
+        ]
+      }
+    },
+    {
+      "title": "Content Management Made Easy",
+      "slug": "content-management-easy",
+      "body": {
+        "nodeType": "document",
+        "data": {},
+        "content": [
+          {
+            "nodeType": "paragraph",
+            "content": [
+              {
+                "nodeType": "text",
+                "value": "Learn how to manage your content efficiently with modern headless CMS solutions.",
+                "marks": [],
+                "data": {}
+              }
+            ],
+            "data": {}
+          }
+        ]
+      }
+    }
+  ],
+  "author": {
+    "name": "John Doe",
+    "email": "john.doe@example.com",
+    "bio": "Experienced content creator and developer with a passion for headless CMS solutions.",
+    "website": "https://johndoe.dev"
+  }
+}
