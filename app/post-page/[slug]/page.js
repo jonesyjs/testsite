@@ -11,11 +11,13 @@ export async function generateStaticParams() {
 
 export default async function PostPage({ params }) {
   const post = await getPost(params.slug, true);
-  post.id = post?.sys?.id;
 
   if (!post) {
     notFound();
   }
+
+  // Safe to set id now that we know post exists
+  post.id = post?.sys?.id;
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-8 bg-white">

@@ -87,7 +87,76 @@ npm run build  # Build for production
 npm run start  # Run production build
 ```
 
-## Step 6. Accessing your posts
+## Step 6. Setting up ngrok for webhook development (Optional)
+
+If you want to test Contentful webhooks locally, you'll need to expose your local development server to the internet using ngrok.
+
+### Install ngrok
+
+```bash
+# Using Homebrew (macOS)
+brew install ngrok/ngrok/ngrok
+
+# Or download from https://ngrok.com/download
+```
+
+### Authenticate ngrok
+
+1. Sign up for a free account at https://dashboard.ngrok.com/signup
+2. Get your authtoken from https://dashboard.ngrok.com/get-started/your-authtoken
+3. Configure ngrok with your token:
+
+```bash
+ngrok config add-authtoken YOUR_AUTHTOKEN_HERE
+```
+
+### Running with ngrok
+
+You need **two terminal windows/tabs** running simultaneously:
+
+**Terminal 1 - Next.js App:**
+```bash
+npm run dev
+```
+
+**Terminal 2 - ngrok Tunnel:**
+```bash
+ngrok http 3000
+```
+
+### Webhook endpoint
+
+Once both are running, ngrok will provide a public HTTPS URL like:
+```
+https://abc123.ngrok-free.app
+```
+
+Your webhook endpoint will be:
+```
+https://abc123.ngrok-free.app/api/contentful-webhook
+```
+
+### Contentful webhook configuration
+
+In your Contentful space:
+1. Go to **Settings → Webhooks → Add Webhook**
+2. Set URL to: `https://YOUR_NGROK_URL.ngrok-free.app/api/contentful-webhook`
+3. Choose events (e.g., `Entry.publish`, `Entry.unpublish`)
+4. Save the webhook
+
+### Optional: Webhook security
+
+For production-like security, add to your `.env.local`:
+```
+CONTENTFUL_WEBHOOK_SECRET=your_webhook_secret_here
+```
+
+### Debugging webhooks
+
+- **ngrok inspector**: Visit http://localhost:4040 to see all webhook requests in real-time
+- **Server logs**: Check your Next.js terminal for webhook payload logs
+
+## Step 7. Accessing your posts
 
 Since this app focuses on individual post pages, you can access your posts at:
 
@@ -97,7 +166,7 @@ http://localhost:3000/post-page/{slug}
 
 Replace `{slug}` with the slug of your post.
 
-## Step 7. Testing live preview
+## Step 8. Testing live preview
 
 1. Visit the preview URL with your secret:
    ```
